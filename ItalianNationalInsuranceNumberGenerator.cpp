@@ -15,24 +15,39 @@ void sleep3() {
 	#endif
 }
 
-
-
 class InsertDate {
 public:
     char name[90];
     char surname[30];
     char gender[2];
-    int birth_day;
-    int birth_month;
-    int birth_year;
+    int birthDay;
+    int birthMonth;
+    int birthYear;
 
     void insertDateFunction() {// In this function, the user is asked to insert data
-		cout << "Name: ";           cin >> name;		verifyName(name);
-        cout << "Surname: ";        cin >> surname;		verifyName(surname);
-		cout << "Gender: [m/f]";         cin >> gender;		verifyGender(gender);
-        cout << "Birth Day: ";      cin >> birth_day;
-        cout << "Birth Month: ";    cin >> birth_month;
-        cout << "Birth Year: ";     cin >> birth_year;
+		cout << "Name: ";
+		cin >> name;		
+		verifyName(name);
+		
+        cout << "Surname: ";        
+		cin >> surname;		
+		verifySurname(surname);
+		
+		cout << "Gender [m/f]:";
+		cin >> gender;		
+		verifyGender(gender);
+		
+        cout << "Birth Day: ";      
+		cin >> birthDay;
+		
+        cout << "Birth Month: ";    
+		cin >> birthMonth;
+		
+        cout << "Birth Year: ";     
+		cin >> birthYear;	
+		
+		verifyBirthDate(birthDay, birthMonth, birthYear);
+		
     }
 	
     //Create a function to verify the name
@@ -49,6 +64,7 @@ public:
 				sleep3();
 				cout << "\033[A\33[2K\033[A\33[2K\rName: ";
 				// \033[A is the command to move the cursor up, \33[2K is the command to clear the line, \r is the command to return to the beginning of the line
+				cout.flush();
 				cin >> name;
 				verifyName(name);
 			}
@@ -68,28 +84,34 @@ public:
 				cout << "Invalid surname! Please re-insert it." << endl;
 				sleep3();
 				cout << "\033[A\33[2K\033[A\33[2K\rSurname: ";
+				cout.flush();
 				cin >> surname;
 				verifySurname(surname);
 			}
 		}
 		return surname[strlen(surname)];
 	}
-
+	
 	//Create a function to verify the gender
 	char verifyGender(char gender[]) {
 		if (gender[0] == 'm' or gender[0] == 'M' or gender[0] == 'f' or gender[0] == 'F') {
-		} else {
+		}
+		else {
 			cout << "Invalid gender! Please re-insert it." << endl;
 			sleep3();
 			cout << "\033[A\33[2K\033[A\33[2K\rGender: ";
+			cout.flush();
 			cin >> gender;
 			verifyGender(gender);
 		}
 		return gender[strlen(gender)];
 	}
+    
+	//Create a function to verify the birth day date
+	int verifyBirthDate(int birthDay, int birthMonth, int birthYear) {
+				
+	}
 	
-	//Create a function to 
-        
 };
 int main() {
     InsertDate insertDate;

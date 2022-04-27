@@ -79,6 +79,8 @@ public:
 		if (gender[0] == 'm' or gender[0] == 'M' or gender[0] == 'f' or gender[0] == 'F') {
 		} else {
 			cout << "Invalid gender! Please re-insert it." << endl;
+			sleep3();
+			cout << "\033[A\33[2K\033[A\33[2K\rGender: ";
 			cin >> gender;
 			verifyGender(gender);
 		}

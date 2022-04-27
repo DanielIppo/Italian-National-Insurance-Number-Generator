@@ -48,6 +48,7 @@ public:
 				cout << "Invalid name! Please re-insert it." << endl;
 				sleep3();
 				cout << "\033[A\33[2K\033[A\33[2K\rName: ";
+				// \033[A is the command to move the cursor up, \33[2K is the command to clear the line, \r is the command to return to the beginning of the line
 				cin >> name;
 				verifyName(name);
 			}

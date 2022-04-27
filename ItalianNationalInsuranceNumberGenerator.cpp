@@ -43,6 +43,15 @@ void header() {
 	cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << AttributeStringOff << endl;
 }
 
+int checkInput(int check) {
+	while (cin.fail()) {
+		cin.clear();
+		cout << "\nThe number you insert is wrong, try again...\n";
+		cin.ignore(1000, '\n');
+		cin >> check;
+	}
+	return check;
+}
 
 //Global Variable declaration
 char name[90];
@@ -76,7 +85,7 @@ public:
 				continue;
 			}
 			else {
-				cout << "Invalid name! Please re-insert it." << endl;
+				cout << Red<< "Invalid name! Please re-insert it." <<AttributeStringOff<< endl;
 				sleep3();
 				cout << "\033[A\33[2K\033[A\33[2K\rName: " << Green << Bold;;
 				// \033[A is the command to move the cursor up, \33[2K is the command to clear the line, \r is the command to return to the beginning of the line
@@ -101,7 +110,7 @@ public:
 				continue;
 			}
 			else {
-				cout << "Invalid surname! Please re-insert it." << endl;
+				cout <<Red<< "Invalid surname! Please re-insert it." << AttributeStringOff << endl;
 				sleep3();
 				cout << "\033[A\33[2K\033[A\33[2K\rSurname: " << Green << Bold;;
 				cout.flush();
@@ -118,7 +127,7 @@ public:
 		if (genderDate[0] == 'm' or genderDate[0] == 'M' or genderDate[0] == 'f' or genderDate[0] == 'F') {
 		}
 		else {
-			cout << "Invalid gender! Please re-insert it." << endl;
+			cout << Red << "Invalid gender! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
 			cout << "\033[A\33[2K\033[A\33[2K\rGender: " << Green << Bold;;
 			cout.flush();
@@ -127,10 +136,26 @@ public:
 			verifyGender(genderDate);
 		}
 		return genderDate[strlen(genderDate)];
+	}	
+	
+	//Create a function to verify the BirthDay
+	int verifyBirthDay(int birthDayDate) {
+		if (birthDayDate > 31 || birthDayDate < 1) {
+			cout <<Red<< "Error: Invalid day of birth! Please re-insert it." << AttributeStringOff << endl;
+			sleep3();
+			cout << "\033[A\33[2K\033[A\33[2K\rBirth Day: " << Green << Bold;
+			cout.flush();
+			cin >> birthDayDate;
+			cout << AttributeStringOff;
+			verifyBirthDay(birthDayDate);
+		}
+		else {
+			return birthDayDate;
+		}
 	}
 	
 	//Create a function to verify the BirthMonth
-	int verifyBirthMonth(int& birthMonthDate) {
+	int verifyBirthMonth(int birthMonthDate) {
 		if (birthMonthDate > 12 || birthMonthDate < 1) {
 			cout << Red << "Error: The month is not valid! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
@@ -142,24 +167,9 @@ public:
 			return birthMonthDate;
 		}
 	}
-	
-	//Create a function to verify the BirthDay
-	int verifyBirthDay(int& birthDayDate) {
-		if (birthDayDate > 31 || birthDayDate < 1) {
-			cout <<Red<< "Error: Invalid day of birth! Please re-insert it." << AttributeStringOff << endl;
-			sleep3();
-			cout << "\033[A\33[2K\033[A\33[2K\rBirth Day: " << Green << Bold;
-			cout.flush();
-			cin >> birthDayDate;
-			verifyBirthDay(birthDayDate);
-		}
-		else {
-			return birthDayDate;
-		}
-	}
-	
+		
 	//Create a function to verify the BirthYear
-	int verifyBirthYear(int& birthYearDate) {
+	int verifyBirthYear(int birthYearDate) {
 		if (birthYearDate > 2019 || birthYearDate < 1900) {
 			cout << Red << "Error: Invalid year of birth! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
@@ -192,6 +202,7 @@ public:
 		cout << "Birth Day: " << Green << Bold;
 		cin >> birthDayDate;
 		cout << AttributeStringOff;
+		checkInput(birthDayDate);
 		verifyBirthDay(birthDayDate);
 
 		cout << "Birth Month: " << Green << Bold;

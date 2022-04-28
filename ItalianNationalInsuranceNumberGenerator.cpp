@@ -5,7 +5,8 @@
 #include <unistd.h>
 #endif
 #include <iostream>
-#include <string>
+#include <string.h>
+size_t strlen(const char* s);
 using namespace std;
 
 #pragma warning(disable : 4996)
@@ -43,12 +44,15 @@ void header() {
 	cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << AttributeStringOff << endl;
 }
 
-int checkInput(int check) {
+int checkInput(int check, string variable) {
 	while (cin.fail()) {
 		cin.clear();
-		cout << "\nThe number you insert is wrong, try again...\n";
+		cout <<Red<< "The number you insert is wrong, Please re-insert it."<<AttributeStringOff;
 		cin.ignore(1000, '\n');
+		sleep3();
+		cout << "\33[2K\033[A\33[2K\r"<<variable<< Green << Bold;
 		cin >> check;
+		cout << AttributeStringOff;
 	}
 	return check;
 }
@@ -59,7 +63,7 @@ char surname[30];
 char gender[2];
 int birthDay;
 int birthMonth;
-int birthYear;
+char birthYear[4];
 
 
 //The class to insert the data of the user
@@ -70,7 +74,7 @@ public:
 	char genderDate[2];
 	int birthDayDate;
 	int birthMonthDate;
-	int birthYearDate;
+	char birthYearDate[4];
 
 	//Create a function to verify the name
 	char verifyName(char nameDate[]) {
@@ -87,7 +91,7 @@ public:
 			else {
 				cout << Red<< "Invalid name! Please re-insert it." <<AttributeStringOff<< endl;
 				sleep3();
-				cout << "\033[A\33[2K\033[A\33[2K\rName: " << Green << Bold;;
+				cout << "\033[A\33[2K\033[A\33[2K\rName: " << Green << Bold;
 				// \033[A is the command to move the cursor up, \33[2K is the command to clear the line, \r is the command to return to the beginning of the line
 				cout.flush();
 				cin >> nameDate;
@@ -169,17 +173,22 @@ public:
 	}
 		
 	//Create a function to verify the BirthYear
-	int verifyBirthYear(int birthYearDate) {
-		if (birthYearDate > 2019 || birthYearDate < 1900) {
+	char verifyBirthYear(char birthYearDate[]) {
+		int birthYearDateInt = (int)birthYearDate;
+		char tmp[90] = { };
+		if (birthYearDateInt > 2019 || birthYearDateInt < 1900) {
 			cout << Red << "Error: Invalid year of birth! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
 			cout << "\033[A\33[2K\033[A\33[2K\rBirth Year: " << Green << Bold;
 			cout.flush();
-			cin >> birthYearDate;
+			cin >> birthYearDateInt;
+			cout << AttributeStringOff;
+			tmp = (char)birthYearDateInt;
+			strcpy(birthYearDate, tmp);
 			verifyBirthYear(birthYearDate);
 		}
 		else {
-			return birthYearDate;
+			return birthYearDate[strlen(birthYearDate)];
 		}
 	}
 	
@@ -202,12 +211,13 @@ public:
 		cout << "Birth Day: " << Green << Bold;
 		cin >> birthDayDate;
 		cout << AttributeStringOff;
-		checkInput(birthDayDate);
+		birthDayDate = checkInput(birthDayDate, "Birth Day: ");
 		verifyBirthDay(birthDayDate);
 
 		cout << "Birth Month: " << Green << Bold;
 		cin >> birthMonthDate;
 		cout << AttributeStringOff;
+		birthMonthDate = checkInput(birthMonthDate, "Birth Month: ");
 		verifyBirthMonth(birthMonthDate);
 
 		cout << AttributeStringOff << "Birth Year: " << Green << Bold;
@@ -219,19 +229,69 @@ public:
 	}
 	
 	//Create a funtion to insert the data of the user to the global variable
-	void classDate_to_globalDate(char nameDate[], char surnameDate[], char genderDate[], int birthDayDate, int birthMonthDate, int birthYearDate) {
+	void classDate_to_globalDate(char nameDate[], char surnameDate[], char genderDate[], int birthDayDate, int birthMonthDate, char birthYearDate[]) {
 		strcpy(name, nameDate);
 		strcpy(surname, surnameDate);
 		strcpy(gender, genderDate);
+		strcpy(birthYear, birthYearDate),
 		birthDay = birthDayDate;
 		birthMonth = birthMonthDate;
-		birthYear = birthYearDate;
 	}
 };
 
 //Class to calculate the Italian National Insurance Number
 class Generator {
+public:
 	
+	char nameGenerator[90] = { };
+	char surnameGenerator[90] = { };
+	char genderGenerator[90] = { };
+	int birthDayGenerator = 0;
+	int birthMonthGenerator = 0;
+	char birthYearGenerator[4] = {};
+	
+	char consonantsName[3] = { };
+	char consonantsSurname[3] = { };
+
+
+	//Create a function to insert the global variable to the class
+	void globalDate_to_classDate(char name[], char surname[], char gender[], int birthDay, int birthMonth, char birthYear[]) {
+		strcpy(nameGenerator, name);
+		strcpy(surnameGenerator, surname);
+		strcpy(genderGenerator, gender);
+		strcpy(birthYearGenerator, birthYear);
+		birthDayGenerator = birthDay;
+		birthMonthGenerator = birthMonth;
+	}
+	
+	//Create a function to separate the consonants to the vowels
+	void separateConsonants(char consonants[], char* consonants1) {
+		int counter = 0;
+		for(int i = 0; i < strlen(consonants); i++) {
+			if (consonants[i] == 'a' || consonants[i] == 'A' || consonants[i] == 'e' || consonants[i] == 'E' || consonants[i] == 'i' || consonants[i] == 'I' || consonants[i] == 'o'|| consonants[i] == 'O' || consonants[i] == 'u' || consonants[i] == 'U') {
+				continue;
+			} else {
+				consonants1[counter] = consonants[i];
+				counter++;
+				if (counter == 3) {
+					break;
+				}
+			}
+		}
+	}
+	
+	//Create a function to split the BirthYear
+	void splitBirthYear(char birthYear[]) {
+		
+	}
+
+	void generatorInsurance() {
+		globalDate_to_classDate(name, surname, gender, birthDay, birthMonth, birthYear);
+		separateConsonants(surnameGenerator, consonantsSurname);
+		separateConsonants(nameGenerator, consonantsName);
+		
+		splitBirthYear(birthYear);
+	}
 };
 
 
@@ -243,7 +303,8 @@ int main() {
 	clear();
 	Generator generator;
 	header();
-
-
+	generator.generatorInsurance();
+	
+	
 	return 0;
 }

@@ -6,6 +6,7 @@
 #endif
 #include <iostream>
 #include <string.h>
+#include <string>
 size_t strlen(const char* s);
 using namespace std;
 
@@ -63,18 +64,18 @@ char surname[30];
 char gender[2];
 int birthDay;
 int birthMonth;
-char birthYear[4];
+char birthYear[5];
 
 
 //The class to insert the data of the user
 class InsertDate {
 public:
 	char nameDate[90];
-	char surnameDate[30];
+	char surnameDate[90];
 	char genderDate[2];
 	int birthDayDate;
 	int birthMonthDate;
-	char birthYearDate[4];
+	char birthYearDate[5];
 
 	//Create a function to verify the name
 	char verifyName(char nameDate[]) {
@@ -170,27 +171,27 @@ public:
 		} else {
 			return birthMonthDate;
 		}
-	}
 		
-	//Create a function to verify the BirthYear
-	char verifyBirthYear(char birthYearDate[]) {
-		int birthYearDateInt = (int)birthYearDate;
-		char tmp[90] = { };
+	}
+	
+	//Create a function to verify the BirthYear with a char array
+	char verifyBirthYear(char birthYearDateV[]) {
+		int birthYearDateInt = atoi(birthYearDateV);
 		if (birthYearDateInt > 2019 || birthYearDateInt < 1900) {
 			cout << Red << "Error: Invalid year of birth! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
 			cout << "\033[A\33[2K\033[A\33[2K\rBirth Year: " << Green << Bold;
 			cout.flush();
-			cin >> birthYearDateInt;
+			cin >> birthYearDateV;
 			cout << AttributeStringOff;
-			tmp = (char)birthYearDateInt;
-			strcpy(birthYearDate, tmp);
+			strcpy(birthYearDate, birthYearDateV);
 			verifyBirthYear(birthYearDate);
 		}
 		else {
-			return birthYearDate[strlen(birthYearDate)];
+			return birthYearDateV[strlen(birthYearDateV)];
 		}
 	}
+
 	
 	void insertDateFunction() {// In this function, the user is asked to insert data
 		cout << "Name: "<<Green<<Bold;
@@ -240,7 +241,7 @@ public:
 };
 
 //Class to calculate the Italian National Insurance Number
-class Generator {
+class GeneratorNIN {
 public:
 	
 	char nameGenerator[90] = { };
@@ -248,10 +249,11 @@ public:
 	char genderGenerator[90] = { };
 	int birthDayGenerator = 0;
 	int birthMonthGenerator = 0;
-	char birthYearGenerator[4] = {};
+	char birthYearGenerator[4] = { };
 	
 	char consonantsName[3] = { };
 	char consonantsSurname[3] = { };
+	char splittedYear[2] = { };
 
 
 	//Create a function to insert the global variable to the class
@@ -279,18 +281,24 @@ public:
 			}
 		}
 	}
-	
-	//Create a function to split the BirthYear
-	void splitBirthYear(char birthYear[]) {
-		
+
+	//Create a function to split the year
+	void splitYears(char birthyear[], char* birthyearsplitter) {
+		for (int i = 0; i < 2; i++) {
+			int j = 2;
+			birthyearsplitter[i] = birthyear[j];
+			j++;
+		}
 	}
 
 	void generatorInsurance() {
 		globalDate_to_classDate(name, surname, gender, birthDay, birthMonth, birthYear);
 		separateConsonants(surnameGenerator, consonantsSurname);
 		separateConsonants(nameGenerator, consonantsName);
+		splitYears(birthYearGenerator, splittedYear);
+
+		cout << consonantsSurname << consonantsName << splittedYear;
 		
-		splitBirthYear(birthYear);
 	}
 };
 
@@ -301,10 +309,12 @@ int main() {
 	cout <<Blue<<Bold<< "\nHello I'm your personal Italian National Insurance Number Generator.\nWrite below your data:" << AttributeStringOff << endl<<endl;
 	insertDate.insertDateFunction();
 	clear();
-	Generator generator;
+	GeneratorNIN generator;
 	header();
 	generator.generatorInsurance();
 	
 	
 	return 0;
 }
+
+

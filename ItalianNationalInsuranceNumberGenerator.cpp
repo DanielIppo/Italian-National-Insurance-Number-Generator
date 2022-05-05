@@ -1,4 +1,4 @@
-/* Italian National Insurance Number Generator by DanielIppo & Pll1n contribute: Filippo127*/
+/* Italian National Insurance Number Generator by DanielIppo & Pall1n contribute: Filippo127*/
 #ifdef _WIN32
 #include <windows.h>
 #else

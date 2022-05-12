@@ -5,7 +5,10 @@
 #include <unistd.h>
 #endif
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <string.h>
+#include <vector>
 using namespace std;
 
 #pragma warning(disable : 4996)
@@ -56,6 +59,44 @@ int checkInput(int check, string variable) {
 	return check;
 }
 
+string get_right_of_delim(string const& str, string const& delim) {
+	return str.substr(str.find(delim) + delim.size());
+}
+
+string get_left_of_delim(string const& str, string const& delim) {
+	return str.substr(0, str.find(delim));
+}
+
+string city[100000];
+string codeOfCity[100000];
+	
+//The class to transfer the data to the program to a txt file
+class TransferData {
+public:
+	
+	void openFile() {
+			string line;
+			ifstream myfile("Towns.txt");
+			 
+			int i = 0;
+			
+			if (myfile.is_open()) {
+				while (getline(myfile, line)) {
+					string cityName = get_left_of_delim(line, ";");
+					string code = get_left_of_delim(get_right_of_delim(line, ";"), ";");
+
+					city[i] = cityName;
+					codeOfCity[i] = code;
+					i++;
+				}
+			}
+			else {
+				cout << Red << "Error to open the file " << Bold << "Towns.txt" << AttributeStringOff << endl;
+			}
+		
+	}
+};
+TransferData transferData;
 
 //The class to insert the data of the user
 class InsertDate {
@@ -64,9 +105,10 @@ public:
 	char surnameDate[90];
 	char genderDate[2];
 	char birthYearDate[90];
-	char birthPlaceDate[90];
-	int birthDayDate;
-	int birthMonthDate;
+	string birthPlaceDate;
+	int birthDayDate = 0;
+	int birthMonthDate = 0;
+	int birthPlaceIndex = 0;
 
 	//Create a function to verify the name
 	char verifyName(char nameDate[]) {
@@ -184,8 +226,32 @@ public:
 		}
 	}
 	
-	char verifyBirthPlace(char birthplacedate[]) {
-		
+	//Create a function to verify the BirthPlace
+	string verifyBirthPlace(string birthplacedate, int &birthPlaceIndex) {
+		bool flag = false;
+		int tmp = 0;
+		//calculate the length of the string birthplacedate
+		int length = birthplacedate.length();
+		for (int i = 0; i < length; i++) {
+			if (birthPlaceDate == city[i]) {
+				flag = true;
+				tmp = i;
+				break;
+			}
+		}
+		if (flag == false) {
+			cout << Red << "Error: Invalid birth place! Please re-insert it." << AttributeStringOff << endl;
+			sleep3();
+			cout << "\033[A\33[2K\033[A\33[2K\rBirth Place: " << Green << Bold;
+			cout.flush();
+			cin >> birthplacedate;
+			cout << AttributeStringOff;	
+			verifyBirthPlace(birthplacedate, birthPlaceIndex);
+			}
+		else {
+			birthPlaceIndex = tmp;
+			return birthplacedate;
+		}
 	}
 
 
@@ -223,13 +289,14 @@ public:
 		verifyBirthYear(birthYearDate);
 		
 		cout << AttributeStringOff << "Birth Place: " << Green << Bold;
-		cin >> birthPlaceDate;
+		getline(cin, birthPlaceDate, '\n');
 		cout << AttributeStringOff;
-		verifyBirthPlace(birthPlaceDate);
+		verifyBirthPlace(birthPlaceDate, birthPlaceIndex);
 
 	}
 
 };
+
 InsertDate insertDate;
 
 //Class to calculate the Italian National Insurance Number
@@ -277,7 +344,9 @@ public:
 GeneratorNIN generator;
 
 
+
 int main() {
+	transferData.openFile();
 	header();
 	cout << Blue << Bold << "Hello I'm your personal Italian National Insurance Number Generator.\nWrite below your data:" << AttributeStringOff << endl << endl;
 	insertDate.insertDateFunction();
@@ -288,5 +357,3 @@ int main() {
 
 	return 0;
 }
-
-

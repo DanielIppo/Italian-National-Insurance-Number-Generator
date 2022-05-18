@@ -9,6 +9,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <vector>
 using namespace std;
 
 #pragma warning(disable : 4996)
@@ -67,33 +68,33 @@ string get_left_of_delim(string const& str, string const& delim) {
 	return str.substr(0, str.find(delim));
 }
 
-string city[100000];
-string codeOfCity[100000];
-	
-//The class to transfer the data to the program to a txt file
-class TransferData {
-public:
-	
-	void openFile() {
-			string line;
-			ifstream myfile("Towns.txt");
-			 
-			int i = 0;
-			
-			if (myfile.is_open()) {
-				while (getline(myfile, line)) {
-					string cityName = get_left_of_delim(line, ";");
-					string code = get_left_of_delim(get_right_of_delim(line, ";"), ";");
+vector <string> city;
+vector <string> codeOfCity;
 
-					city[i] = cityName;
-					codeOfCity[i] = code;
-					i++;
-				}
+//The class to transfer the data to the program to a txt file
+class TransferData {	
+public:
+
+	void openFile() {
+		string line;
+		ifstream myfile("Towns.txt");
+
+		int i = 0;
+
+		if (myfile.is_open()) {
+			while (getline(myfile, line)) {
+				string cityName = get_left_of_delim(line, ";");
+				string code = get_left_of_delim(get_right_of_delim(line, ";"), ";");
+
+				city.push_back(cityName);
+				codeOfCity.push_back(code);
+				i++;
 			}
-			else {
-				cout << Red << "Error to open the file " << Bold << "Towns.txt" << AttributeStringOff << endl;
-			}
-		
+		}
+		else {
+			cout << Red << "Error to open the file " << Bold << "Towns.txt" << AttributeStringOff << endl;
+		}
+
 	}
 };
 TransferData transferData;
@@ -167,7 +168,7 @@ public:
 		else {
 			cout << Red << "Invalid gender! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
-			cout << "\033[A\33[2K\033[A\33[2K\rGender: " << Green << Bold;;
+			cout << "\033[A\33[2K\033[A\33[2K\rGender [m/f]: " << Green << Bold;;
 			cout.flush();
 			cin >> genderDate;
 			cout << AttributeStringOff;
@@ -225,33 +226,31 @@ public:
 			return birthYearDateV[strlen(birthYearDateV)];
 		}
 	}
-	
+
 	//Create a function to verify the BirthPlace
-	string verifyBirthPlace(string birthplacedate, int &birthPlaceIndex) {
-		bool flag = false;
-		int tmp = 0;
-		//calculate the length of the string birthplacedate
-		int length = birthplacedate.length();
-		for (int i = 0; i < length; i++) {
-			if (birthPlaceDate == city[i]) {
-				flag = true;
-				tmp = i;
-				break;
+	string verifyBirthPlace(string birthplacedate, int& birthPlaceIndex) {
+		
+			if(find(city.begin(), city.end(), birthplacedate) != city.end()) {
+				return birthplacedate;
 			}
-		}
-		if (flag == false) {
-			cout << Red << "Error: Invalid birth place! Please re-insert it." << AttributeStringOff << endl;
+			else {
+				cout << Red << "Error: Invalid place of birth! Please re-insert it." << AttributeStringOff << endl;
+				sleep3();
+				cout << "\033[A\33[2K\033[A\33[2K\rBirth Place: " << Green << Bold;
+				cout.flush();
+				cin >> birthplacedate;
+				cout << AttributeStringOff;
+				verifyBirthPlace(birthplacedate, birthPlaceIndex);
+			}
+			
+			/*cout << Red << "Error: Invalid birth place! Please re-insert it." << AttributeStringOff << endl;
 			sleep3();
-			cout << "\033[A\33[2K\033[A\33[2K\rBirth Place: " << Green << Bold;
+			cout << "\033[A\33[2K\rBirth Place: " << Green << Bold;
 			cout.flush();
 			cin >> birthplacedate;
-			cout << AttributeStringOff;	
-			verifyBirthPlace(birthplacedate, birthPlaceIndex);
-			}
-		else {
-			birthPlaceIndex = tmp;
-			return birthplacedate;
-		}
+			cout << AttributeStringOff;
+			verifyBirthPlace(birthplacedate, birthPlaceIndex);*/
+
 	}
 
 
@@ -287,8 +286,9 @@ public:
 		cin >> birthYearDate;
 		cout << AttributeStringOff;
 		verifyBirthYear(birthYearDate);
-		
+
 		cout << AttributeStringOff << "Birth Place: " << Green << Bold;
+		cin.clear();
 		getline(cin, birthPlaceDate, '\n');
 		cout << AttributeStringOff;
 		verifyBirthPlace(birthPlaceDate, birthPlaceIndex);
@@ -331,7 +331,7 @@ public:
 	}
 
 	void generatorInsurance() {
-		
+
 		separateConsonants(insertDate.surnameDate, consonantsSurname);
 		separateConsonants(insertDate.nameDate, consonantsName);
 		splitYears(insertDate.birthYearDate, splittedYears);
@@ -339,7 +339,7 @@ public:
 	}
 
 
-	
+
 };
 GeneratorNIN generator;
 
